@@ -3,6 +3,10 @@
     "filesystem": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\USER\\OneDrive\\Escritorio\\Nueva carpeta"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "C:\\Users\\USER\\OneDrive\\Escritorio\\Nueva carpeta"]
     }
   }
 }
