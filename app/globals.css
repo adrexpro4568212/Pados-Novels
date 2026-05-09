@@ -128,3 +128,48 @@
     @apply font-sans;
   }
 }
+
+/* ── Estudio Nocturno (default dark) ── */
+[data-theme='dark'],
+:root {
+  --bg-primary:    #0f0f13;
+  --bg-secondary:  #13131a;
+  --bg-tertiary:   #1e1e2a;
+  --border:        #252530;
+  --text-primary:  #e8e0d5;
+  --text-secondary:#c9b99a;
+  --text-muted:    #6b6b7a;
+  --accent:        #c9b99a;
+  --accent-soft:   rgba(201,185,154,0.10);
+}
+
+/* ── Papel y Tinta (warm) ── */
+[data-theme='warm'] {
+  --bg-primary:    #faf6f0;
+  --bg-secondary:  #f5ede3;
+  --bg-tertiary:   #ffffff;
+  --border:        #e8ddd0;
+  --text-primary:  #3d2b1f;
+  --text-secondary:#9b7e5a;
+  --text-muted:    #b8a898;
+  --accent:        #9b7e5a;
+  --accent-soft:   rgba(155,126,90,0.10);
+}
+
+/* ── Editorial Moderno (modern) ── */
+[data-theme='modern'] {
+  --bg-primary:    #f8f9fc;
+  --bg-secondary:  #ffffff;
+  --bg-tertiary:   #f1f5f9;
+  --border:        #e2e8f0;
+  --text-primary:  #1e293b;
+  --text-secondary:#64748b;
+  --text-muted:    #94a3b8;
+  --accent:        #6366f1;
+  --accent-soft:   #eef2ff;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
