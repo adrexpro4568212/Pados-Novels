@@ -1,0 +1,6 @@
+
+# opencode config (contains tokens)
+.opencode.json
+
+# generated data (database, temp files)
+data/
