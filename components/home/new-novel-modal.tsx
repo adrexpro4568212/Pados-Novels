@@ -28,7 +28,7 @@ export function NewNovelModal({ open, onClose }: NewNovelModalProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) { setTitle(''); setGenre('') } onClose() }}>
       <DialogContent style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
         <DialogHeader>
           <DialogTitle style={{ color: 'var(--text-primary)' }}>Nueva novela</DialogTitle>

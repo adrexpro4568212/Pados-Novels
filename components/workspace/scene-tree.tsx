@@ -1,8 +1,10 @@
 'use client'
 
 import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
 import { useChapters, createChapter } from '@/lib/hooks/use-chapters'
 import { updateScene } from '@/lib/hooks/use-scenes'
+import { db } from '@/lib/db'
 import { SceneTreeChapter } from './scene-tree-chapter'
 
 interface SceneTreeProps {
@@ -19,7 +21,23 @@ export function SceneTree({ novelId }: SceneTreeProps) {
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
-    await updateScene(active.id as string, { order: over.id as unknown as number })
+
+    for (const chapter of chapters) {
+      const chapterScenes = await db.scenes
+        .where('chapterId').equals(chapter.id)
+        .sortBy('order')
+
+      const oldIndex = chapterScenes.findIndex(s => s.id === active.id)
+      const newIndex = chapterScenes.findIndex(s => s.id === over.id)
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const reordered = arrayMove(chapterScenes, oldIndex, newIndex)
+        await Promise.all(
+          reordered.map((scene, index) => updateScene(scene.id, { order: index }))
+        )
+        break
+      }
+    }
   }
 
   return (

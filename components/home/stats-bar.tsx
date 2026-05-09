@@ -27,7 +27,7 @@ export function StatsBar() {
           db.writing_sessions.where('novelId').equals(novel.id).filter(s => s.date === today).first(),
           db.writing_sessions.where('novelId').equals(novel.id).filter(s => s.date === yesterday).first(),
         ])
-        if (t) total += t.wordCount - (y?.wordCount ?? 0)
+        if (t) total += Math.max(0, t.wordCount - (y?.wordCount ?? 0))
       }
       return total
     },
