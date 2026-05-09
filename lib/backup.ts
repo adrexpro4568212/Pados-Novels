@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { todayString } from '@/lib/utils'
+import { todayString, newId } from '@/lib/utils'
 import type { Novel, Chapter, Scene, Character, Note, WritingSession } from '@/lib/db.types'
 
 export interface NovelrBackup {
@@ -71,4 +71,67 @@ export function parseBackup(json: string): NovelrBackup | null {
   } catch {
     return null
   }
+}
+
+export async function importBackup(
+  backup: NovelrBackup,
+  overrides: { title: string; color: string }
+): Promise<string> {
+  const novelId = newId()
+
+  const chapMap: Record<string, string> = {}
+  const sceneMap: Record<string, string> = {}
+  const charMap: Record<string, string> = {}
+  const noteMap: Record<string, string> = {}
+  const sessMap: Record<string, string> = {}
+
+  backup.chapters.forEach(c => { chapMap[c.id] = newId() })
+  backup.scenes.forEach(s => { sceneMap[s.id] = newId() })
+  backup.characters.forEach(c => { charMap[c.id] = newId() })
+  backup.notes.forEach(n => { noteMap[n.id] = newId() })
+  backup.writingSessions.forEach(s => { sessMap[s.id] = newId() })
+
+  const now = Date.now()
+
+  await db.transaction('rw', [
+    db.novels, db.chapters, db.scenes,
+    db.characters, db.notes, db.writing_sessions,
+  ], async () => {
+    await db.novels.add({
+      ...backup.novel,
+      id: novelId,
+      title: overrides.title,
+      color: overrides.color,
+      createdAt: now,
+      updatedAt: now,
+    })
+    await db.chapters.bulkAdd(backup.chapters.map(c => ({
+      ...c,
+      id: chapMap[c.id],
+      novelId,
+    })))
+    await db.scenes.bulkAdd(backup.scenes.map(s => ({
+      ...s,
+      id: sceneMap[s.id],
+      novelId,
+      chapterId: chapMap[s.chapterId],
+    })))
+    await db.characters.bulkAdd(backup.characters.map(c => ({
+      ...c,
+      id: charMap[c.id],
+      novelId,
+    })))
+    await db.notes.bulkAdd(backup.notes.map(n => ({
+      ...n,
+      id: noteMap[n.id],
+      novelId,
+    })))
+    await db.writing_sessions.bulkAdd(backup.writingSessions.map(s => ({
+      ...s,
+      id: sessMap[s.id],
+      novelId,
+    })))
+  })
+
+  return novelId
 }
