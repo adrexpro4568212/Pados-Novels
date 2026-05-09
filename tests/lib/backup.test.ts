@@ -53,6 +53,8 @@ describe('parseBackup', () => {
       characters: [], notes: [], writingSessions: [],
     }
     const result = parseBackup(JSON.stringify(raw))
+    expect(result).not.toBeNull()
     expect(result).toMatchObject({ version: 1, novel: { id: 'x' } })
+    expect(Array.isArray(result?.chapters)).toBe(true)
   })
 })

@@ -38,7 +38,8 @@ export async function buildBackup(novelId: string): Promise<NovelrBackup> {
 }
 
 function sanitizeFilename(title: string): string {
-  return title.replace(/[/\\:*?"<>|]/g, '').replace(/\s+/g, '-')
+  const sanitized = title.replace(/[/\\:*?"<>|]/g, '').replace(/\s+/g, '-').replace(/^-+|-+$/g, '')
+  return sanitized || 'backup'
 }
 
 export function downloadBackup(backup: NovelrBackup): void {
@@ -58,7 +59,14 @@ export function parseBackup(json: string): NovelrBackup | null {
   try {
     const data = JSON.parse(json)
     if (data.version !== 1) return null
-    if (!data.novel || !Array.isArray(data.chapters) || !Array.isArray(data.scenes)) return null
+    if (
+      !data.novel ||
+      !Array.isArray(data.chapters) ||
+      !Array.isArray(data.scenes) ||
+      !Array.isArray(data.characters) ||
+      !Array.isArray(data.notes) ||
+      !Array.isArray(data.writingSessions)
+    ) return null
     return data as NovelrBackup
   } catch {
     return null
