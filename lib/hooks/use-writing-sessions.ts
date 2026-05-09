@@ -25,15 +25,17 @@ export function useTodayWordCount(novelId: string): number {
   const result = useLiveQuery(
     async () => {
       const today = todayString()
-      const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10)
 
-      const [todaySession, yesterdaySession] = await Promise.all([
-        db.writing_sessions.where('novelId').equals(novelId).filter(s => s.date === today).first(),
-        db.writing_sessions.where('novelId').equals(novelId).filter(s => s.date === yesterday).first(),
-      ])
+      const allSessions = await db.writing_sessions
+        .where('novelId').equals(novelId)
+        .sortBy('date')
 
+      const todaySession = allSessions.find(s => s.date === today)
       if (!todaySession) return 0
-      return todaySession.wordCount - (yesterdaySession?.wordCount ?? 0)
+
+      // Most recent session from before today (handles gaps in writing days)
+      const prevSession = [...allSessions].reverse().find(s => s.date < today)
+      return Math.max(0, todaySession.wordCount - (prevSession?.wordCount ?? 0))
     },
     [novelId],
     0

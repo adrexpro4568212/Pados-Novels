@@ -141,6 +141,16 @@
   --text-muted:    #6b6b7a;
   --accent:        #c9b99a;
   --accent-soft:   rgba(201,185,154,0.10);
+  /* Remap shadcn tokens to match custom theme */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --input: var(--bg-tertiary);
+  --muted: var(--bg-secondary);
+  --muted-foreground: var(--text-muted);
+  --card: var(--bg-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-secondary);
+  --popover-foreground: var(--text-primary);
 }
 
 /* ── Papel y Tinta (warm) ── */
@@ -154,6 +164,16 @@
   --text-muted:    #b8a898;
   --accent:        #9b7e5a;
   --accent-soft:   rgba(155,126,90,0.10);
+  /* Remap shadcn tokens to match custom theme */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --input: var(--bg-tertiary);
+  --muted: var(--bg-secondary);
+  --muted-foreground: var(--text-muted);
+  --card: var(--bg-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-secondary);
+  --popover-foreground: var(--text-primary);
 }
 
 /* ── Editorial Moderno (modern) ── */
@@ -167,6 +187,16 @@
   --text-muted:    #94a3b8;
   --accent:        #6366f1;
   --accent-soft:   #eef2ff;
+  /* Remap shadcn tokens to match custom theme */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --input: var(--bg-tertiary);
+  --muted: var(--bg-secondary);
+  --muted-foreground: var(--text-muted);
+  --card: var(--bg-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-secondary);
+  --popover-foreground: var(--text-primary);
 }
 
 body {
