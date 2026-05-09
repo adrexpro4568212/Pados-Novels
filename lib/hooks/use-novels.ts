@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { newId } from '@/lib/utils'
 import type { Novel } from '@/lib/db.types'
 
-const NOVEL_COLORS = [
+export const NOVEL_COLORS = [
   '#8b7355', '#4a6b8b', '#6b4a8b', '#4a8b6b', '#8b4a4a',
   '#6b8b4a', '#4a6b8b', '#8b6b4a', '#4a8b8b', '#8b4a6b',
 ]
