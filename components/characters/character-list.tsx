@@ -39,28 +39,31 @@ export function CharacterList({ novelId }: { novelId: string }) {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {characters.map(char => (
-            <div
+            <button
               key={char.id}
-              className="rounded-xl p-4 cursor-pointer hover:opacity-80 transition-opacity group"
+              type="button"
+              className="rounded-xl p-4 text-left hover:opacity-80 transition-opacity group"
               style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
               onClick={() => router.push(`/novel/${novelId}/bible/characters/${char.id}`)}
             >
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg mb-3"
                 style={{ background: 'var(--bg-tertiary)' }}>
-                👤
+                <span aria-hidden="true">👤</span>
               </div>
               <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{char.name}</p>
               <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 {ROLE_LABELS[char.role] ?? char.role}
               </p>
               <button
-                className="text-xs mt-2 opacity-0 group-hover:opacity-100"
+                type="button"
+                aria-label="Eliminar personaje"
+                className="text-xs mt-2 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
                 style={{ color: 'var(--text-muted)' }}
                 onClick={async (e) => { e.stopPropagation(); if (confirm('¿Eliminar personaje?')) await deleteCharacter(char.id) }}
               >
                 🗑️ Eliminar
               </button>
-            </div>
+            </button>
           ))}
         </div>
       )}

@@ -5,6 +5,8 @@ import { useCharacter, updateCharacter } from '@/lib/hooks/use-characters'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
+type CharacterRole = 'protagonist' | 'secondary' | 'antagonist' | 'other'
+
 const ROLES = [
   { value: 'protagonist', label: 'Protagonista' },
   { value: 'secondary',   label: 'Secundario' },
@@ -15,14 +17,16 @@ const ROLES = [
 function Field({ label, value, onChange, multiline = false, hint }: {
   label: string; value: string; onChange: (v: string) => void; multiline?: boolean; hint?: string
 }) {
+  const id = label.toLowerCase().replace(/\s+/g, '-')
   return (
     <div>
-      <label className="block text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
+      <label htmlFor={id} className="block text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
         {label}
       </label>
       {hint && <p className="text-xs mb-1.5 italic" style={{ color: 'var(--text-muted)' }}>{hint}</p>}
       {multiline ? (
         <Textarea
+          id={id}
           value={value}
           onChange={e => onChange(e.target.value)}
           rows={3}
@@ -30,6 +34,7 @@ function Field({ label, value, onChange, multiline = false, hint }: {
         />
       ) : (
         <Input
+          id={id}
           value={value}
           onChange={e => onChange(e.target.value)}
           style={{ background: 'var(--bg-tertiary)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
@@ -42,18 +47,18 @@ function Field({ label, value, onChange, multiline = false, hint }: {
 export function CharacterForm({ charId }: { charId: string }) {
   const character = useCharacter(charId)
   const [form, setForm] = useState({
-    name: '', role: 'secondary' as const, age: '', description: '',
+    name: '', role: 'secondary' as CharacterRole, age: '', description: '',
     internalWound: '', falseBelief: '', secretDesire: '', notes: '',
   })
 
   useEffect(() => {
     if (character) setForm({
-      name: character.name, role: character.role as typeof form.role,
+      name: character.name, role: character.role as CharacterRole,
       age: character.age, description: character.description,
       internalWound: character.internalWound, falseBelief: character.falseBelief,
       secretDesire: character.secretDesire, notes: character.notes,
     })
-  }, [character?.id])
+  }, [character])
 
   function set(key: keyof typeof form) {
     return (v: string) => {
