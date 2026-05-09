@@ -3,4 +3,4 @@
 .opencode.json
 
 # generated data (database, temp files)
-data/
+data/.superpowers/
