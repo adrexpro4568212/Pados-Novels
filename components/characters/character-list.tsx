@@ -39,12 +39,14 @@ export function CharacterList({ novelId }: { novelId: string }) {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {characters.map(char => (
-            <button
+            <div
               key={char.id}
-              type="button"
-              className="rounded-xl p-4 text-left hover:opacity-80 transition-opacity group"
+              role="button"
+              tabIndex={0}
+              className="rounded-xl p-4 text-left hover:opacity-80 transition-opacity group cursor-pointer"
               style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
               onClick={() => router.push(`/novel/${novelId}/bible/characters/${char.id}`)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') router.push(`/novel/${novelId}/bible/characters/${char.id}`) }}
             >
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg mb-3"
                 style={{ background: 'var(--bg-tertiary)' }}>
@@ -63,7 +65,7 @@ export function CharacterList({ novelId }: { novelId: string }) {
               >
                 🗑️ Eliminar
               </button>
-            </button>
+            </div>
           ))}
         </div>
       )}
