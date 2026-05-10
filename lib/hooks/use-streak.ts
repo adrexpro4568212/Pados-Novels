@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useNovel } from '@/lib/hooks/use-novels'
 import { useWritingSessions } from '@/lib/hooks/use-writing-sessions'
 import { todayString } from '@/lib/utils'
@@ -15,7 +14,17 @@ export function computeStreak(
   minWords: number,
   today: string = todayString()
 ): number {
-  const sorted = [...sessions].sort((a, b) => a.date.localeCompare(b.date))
+  // Aggregate by date: keep the highest cumulative wordCount per date.
+  // (wordCount is cumulative — the latest value for a day is the largest.)
+  const dateMap = new Map<string, number>()
+  for (const s of sessions) {
+    if ((dateMap.get(s.date) ?? -1) < s.wordCount) {
+      dateMap.set(s.date, s.wordCount)
+    }
+  }
+  const sorted = [...dateMap.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, wordCount]) => ({ date, wordCount }))
 
   // Build set of dates where that day's delta meets the minimum.
   // wordCount is cumulative — delta = current session minus previous session.
@@ -44,5 +53,6 @@ export function useStreak(novelId: string): number {
   const sessions = useWritingSessions(novelId) ?? []
   const novel = useNovel(novelId)
   const minWords = novel?.streakMinWords ?? 50
-  return useMemo(() => computeStreak(sessions, minWords), [sessions, minWords])
+  // computeStreak is a fast pure function — no memoization needed
+  return computeStreak(sessions, minWords)
 }

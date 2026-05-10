@@ -51,4 +51,27 @@ describe('computeStreak', () => {
   it('counts a day where delta is exactly minWords (boundary)', () => {
     expect(computeStreak([sess(TODAY, 50)], 50, TODAY)).toBe(1)
   })
+
+  it('preserves multi-day streak when today is below minWords', () => {
+    // 5-day streak ending yesterday; today has a session but below threshold
+    const sessions = [
+      sess('2026-05-04', 60),   // delta 60 ✅
+      sess('2026-05-05', 120),  // delta 60 ✅
+      sess('2026-05-06', 180),  // delta 60 ✅
+      sess('2026-05-07', 240),  // delta 60 ✅
+      sess('2026-05-08', 300),  // delta 60 ✅ yesterday
+      sess(TODAY, 320),          // delta 20 ❌ today, below 50 — should not break streak
+    ]
+    expect(computeStreak(sessions, 50, TODAY)).toBe(5)
+  })
+
+  it('handles unsorted input correctly', () => {
+    // Same data as the three-consecutive test but provided in reverse order
+    const sessions = [
+      sess(TODAY, 200),
+      sess('2026-05-08', 130),
+      sess('2026-05-07', 60),
+    ]
+    expect(computeStreak(sessions, 50, TODAY)).toBe(3)
+  })
 })
