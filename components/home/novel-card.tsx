@@ -9,9 +9,10 @@ interface NovelCardProps {
   novel: Novel
   onDelete: (id: string) => void
   onRename: (id: string) => void
+  onExport: (id: string) => void
 }
 
-export function NovelCard({ novel, onDelete, onRename }: NovelCardProps) {
+export function NovelCard({ novel, onDelete, onRename, onExport }: NovelCardProps) {
   const router = useRouter()
   const wordCount = useNovelWordCount(novel.id)
   const progress = novel.targetWordCount > 0 ? Math.min((wordCount / novel.targetWordCount) * 100, 100) : 0
@@ -46,6 +47,8 @@ export function NovelCard({ novel, onDelete, onRename }: NovelCardProps) {
       {/* Hover actions */}
       <div className="absolute top-3 right-3 hidden group-hover:flex gap-1">
         <button
+          type="button"
+          title="Renombrar"
           className="text-xs px-2 py-1 rounded"
           style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
           onClick={(e) => { e.stopPropagation(); onRename(novel.id) }}
@@ -53,6 +56,17 @@ export function NovelCard({ novel, onDelete, onRename }: NovelCardProps) {
           ✏️
         </button>
         <button
+          type="button"
+          title="Exportar backup"
+          className="text-xs px-2 py-1 rounded"
+          style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
+          onClick={(e) => { e.stopPropagation(); onExport(novel.id) }}
+        >
+          ⬇
+        </button>
+        <button
+          type="button"
+          title="Eliminar"
           className="text-xs px-2 py-1 rounded"
           style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
           onClick={(e) => { e.stopPropagation(); onDelete(novel.id) }}
