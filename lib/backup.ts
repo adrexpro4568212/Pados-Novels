@@ -92,6 +92,8 @@ export async function importBackup(
   backup.writingSessions.forEach(s => { sessMap[s.id] = newId() })
 
   const now = Date.now()
+  // `now` is applied only to the novel's createdAt/updatedAt. Child records
+  // (chapters, scenes, etc.) preserve their original timestamps from the backup.
 
   await db.transaction('rw', [
     db.novels, db.chapters, db.scenes,
@@ -110,6 +112,12 @@ export async function importBackup(
       id: chapMap[c.id],
       novelId,
     })))
+    // Guard: ensure all scene chapterIds are in the map (catches corrupted backups)
+    for (const s of backup.scenes) {
+      if (!chapMap[s.chapterId]) {
+        throw new Error(`Scene "${s.id}" references unknown chapterId "${s.chapterId}"`)
+      }
+    }
     await db.scenes.bulkAdd(backup.scenes.map(s => ({
       ...s,
       id: sceneMap[s.id],
