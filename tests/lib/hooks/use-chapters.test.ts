@@ -19,7 +19,7 @@ async function makeChapters(novelId: string, count: number) {
 describe('reorderChapters', () => {
   it('moves a chapter from index 0 to index 2 (of 3)', async () => {
     const chapters = await makeChapters('novel-1', 3)
-    const [a, b, c] = chapters
+    const [a, , c] = chapters
     await reorderChapters(chapters, a.id, c.id)
     const result = await db.chapters.where('novelId').equals('novel-1').sortBy('order')
     expect(result.map(ch => ch.title)).toEqual(['Cap 2', 'Cap 3', 'Cap 1'])
@@ -47,5 +47,12 @@ describe('reorderChapters', () => {
     await reorderChapters(chapters, a.id, c.id)
     const result = await db.chapters.where('novelId').equals('novel-1').sortBy('order')
     expect(result.map(ch => ch.order)).toEqual([0, 1, 2])
+  })
+
+  it('does nothing when fromId is not found in chapters', async () => {
+    const chapters = await makeChapters('novel-1', 2)
+    await reorderChapters(chapters, 'nonexistent-id', chapters[1].id)
+    const result = await db.chapters.where('novelId').equals('novel-1').sortBy('order')
+    expect(result.map(ch => ch.title)).toEqual(['Cap 1', 'Cap 2'])
   })
 })

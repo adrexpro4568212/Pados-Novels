@@ -52,7 +52,9 @@ export async function reorderChapters(
   const newIndex = chapters.findIndex(c => c.id === toId)
   if (oldIndex === -1 || newIndex === -1) return
   const reordered = arrayMove(chapters, oldIndex, newIndex)
-  await Promise.all(
-    reordered.map((chapter, index) => updateChapter(chapter.id, { order: index }))
-  )
+  await db.transaction('rw', db.chapters, async () => {
+    await Promise.all(
+      reordered.map((chapter, index) => updateChapter(chapter.id, { order: index }))
+    )
+  })
 }
