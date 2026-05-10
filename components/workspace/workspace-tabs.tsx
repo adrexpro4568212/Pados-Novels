@@ -61,6 +61,7 @@ export function WorkspaceTabs() {
       <div className="ml-auto flex items-center gap-2">
         {/* Streak badge: full opacity when active, dimmed when 0 */}
         <div
+          aria-label={`Racha: ${streak} días`}
           className="flex items-center gap-1 rounded px-2 py-1 text-xs"
           style={{
             background: 'var(--bg-tertiary)',
@@ -69,7 +70,7 @@ export function WorkspaceTabs() {
             opacity: streak > 0 ? 1 : 0.4,
           }}
         >
-          <span>🔥</span>
+          <span aria-hidden="true">🔥</span>
           <span>{streak} días</span>
         </div>
 
