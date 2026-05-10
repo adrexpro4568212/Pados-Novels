@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { arrayMove } from '@dnd-kit/sortable'
 import { db } from '@/lib/db'
 import { newId } from '@/lib/utils'
 import type { Chapter } from '@/lib/db.types'
@@ -32,5 +33,26 @@ export function useChapters(novelId: string) {
     () => db.chapters.where('novelId').equals(novelId).sortBy('order'),
     [novelId],
     []
+  )
+}
+
+/**
+ * Reorders chapters in Dexie after a drag-and-drop.
+ * chapters: the current sorted array (from useChapters)
+ * fromId:   the id of the chapter being dragged
+ * toId:     the id of the chapter it was dropped onto
+ */
+export async function reorderChapters(
+  chapters: Chapter[],
+  fromId: string,
+  toId: string
+): Promise<void> {
+  if (fromId === toId) return
+  const oldIndex = chapters.findIndex(c => c.id === fromId)
+  const newIndex = chapters.findIndex(c => c.id === toId)
+  if (oldIndex === -1 || newIndex === -1) return
+  const reordered = arrayMove(chapters, oldIndex, newIndex)
+  await Promise.all(
+    reordered.map((chapter, index) => updateChapter(chapter.id, { order: index }))
   )
 }
