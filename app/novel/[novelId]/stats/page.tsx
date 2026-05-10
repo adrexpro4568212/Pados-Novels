@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { useNovelWordCount } from '@/lib/hooks/use-scenes'
 import { useNovel, updateNovel } from '@/lib/hooks/use-novels'
@@ -21,8 +21,11 @@ export default function StatsPage() {
   const streak = useMemo(() => computeStreak(sessions, minWords), [sessions, minWords])
 
   // Local string state so the user can type freely without invalid intermediate values saving
+  const inputFocused = useRef(false)
   const [inputMin, setInputMin] = useState(String(minWords))
-  useEffect(() => { setInputMin(String(minWords)) }, [minWords])
+  useEffect(() => {
+    if (!inputFocused.current) setInputMin(String(minWords))
+  }, [minWords])
 
   function handleMinChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputMin(e.target.value)
@@ -33,9 +36,10 @@ export default function StatsPage() {
   }
 
   function handleMinBlur() {
+    inputFocused.current = false
     const v = parseInt(inputMin, 10)
     if (isNaN(v) || v < 1 || v > 10000) {
-      setInputMin(String(minWords)) // reset to last valid value on blur
+      setInputMin(String(minWords))
     }
   }
 
@@ -132,11 +136,13 @@ export default function StatsPage() {
         <label htmlFor="streak-min">Mínimo diario para racha:</label>
         <input
           id="streak-min"
+          aria-label="Mínimo diario para racha en palabras"
           type="number"
           min={1}
           max={10000}
           value={inputMin}
           onChange={handleMinChange}
+          onFocus={() => { inputFocused.current = true }}
           onBlur={handleMinBlur}
           className="w-20 rounded px-2 py-1 text-center"
           style={{
