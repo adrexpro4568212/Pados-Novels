@@ -136,7 +136,6 @@ export default function StatsPage() {
         <label htmlFor="streak-min">Mínimo diario para racha:</label>
         <input
           id="streak-min"
-          aria-label="Mínimo diario para racha en palabras"
           type="number"
           min={1}
           max={10000}
