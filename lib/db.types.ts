@@ -7,6 +7,7 @@ export interface Novel {
   targetWordCount: number
   createdAt: number
   updatedAt: number
+  streakMinWords?: number   // mínimo de palabras/día para racha. Default: 50
 }
 
 export interface Chapter {
