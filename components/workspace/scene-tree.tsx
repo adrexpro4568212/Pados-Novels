@@ -5,6 +5,7 @@ import {
   DndContext,
   DragOverlay,
   closestCenter,
+  type DragCancelEvent,
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core'
@@ -91,6 +92,7 @@ export function SceneTree({ novelId }: SceneTreeProps) {
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onDragCancel={() => setActiveChapterId(null)}
         >
           <SortableContext
             items={chapters.map(c => c.id)}
@@ -126,7 +128,6 @@ export function SceneTree({ novelId }: SceneTreeProps) {
                 }}
               >
                 <span style={{ color: 'var(--accent)' }}>⠿</span>
-                <span style={{ color: 'var(--text-muted)' }}>▼</span>
                 <span className="flex-1 truncate">{activeChapter.title}</span>
               </div>
             ) : null}

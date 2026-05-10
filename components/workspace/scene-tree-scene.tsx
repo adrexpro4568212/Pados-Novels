@@ -15,7 +15,7 @@ export function SceneTreeScene({ scene, novelId }: SceneTreeSceneProps) {
   const pathname = usePathname()
   const active = pathname.includes(scene.id)
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: scene.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: scene.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -31,7 +31,7 @@ export function SceneTreeScene({ scene, novelId }: SceneTreeSceneProps) {
       {...attributes}
     >
       <span
-        className="cursor-grab opacity-0 group-hover:opacity-100 text-xs"
+        className={`opacity-0 group-hover:opacity-100 text-xs ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         style={{ color: 'var(--text-muted)' }}
         {...listeners}
       >
