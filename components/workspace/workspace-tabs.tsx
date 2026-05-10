@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { useNovel } from '@/lib/hooks/use-novels'
 import { buildBackup, downloadBackup } from '@/lib/backup'
+import { useStreak } from '@/lib/hooks/use-streak'
 
 const TABS = [
   { label: 'Manuscrito', segment: 'manuscript' },
@@ -16,6 +17,7 @@ export function WorkspaceTabs() {
   const params = useParams<{ novelId: string }>()
   const pathname = usePathname()
   const novel = useNovel(params.novelId)
+  const streak = useStreak(params.novelId)
 
   async function handleExport() {
     try {
@@ -56,7 +58,21 @@ export function WorkspaceTabs() {
         )
       })}
 
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-2">
+        {/* Streak badge: full opacity when active, dimmed when 0 */}
+        <div
+          className="flex items-center gap-1 rounded px-2 py-1 text-xs"
+          style={{
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border)',
+            color: streak > 0 ? 'var(--accent)' : 'var(--text-muted)',
+            opacity: streak > 0 ? 1 : 0.4,
+          }}
+        >
+          <span>🔥</span>
+          <span>{streak} días</span>
+        </div>
+
         <button
           type="button"
           onClick={handleExport}
