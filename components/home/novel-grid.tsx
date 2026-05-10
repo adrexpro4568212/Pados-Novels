@@ -25,8 +25,12 @@ export function NovelGrid() {
   }
 
   async function handleExport(id: string) {
-    const backup = await buildBackup(id)
-    downloadBackup(backup)
+    try {
+      const backup = await buildBackup(id)
+      downloadBackup(backup)
+    } catch {
+      alert('Error al exportar la novela. Intenta de nuevo.')
+    }
   }
 
   return (
