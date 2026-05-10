@@ -48,7 +48,7 @@ export function SceneTreeChapter({ chapter, novelId }: SceneTreeChapterProps) {
       >
         {/* Drag handle — only this element activates the drag */}
         <span
-          className="cursor-grab opacity-0 group-hover:opacity-100 text-xs"
+          className={`text-xs opacity-0 group-hover:opacity-100 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
           style={{ color: 'var(--text-muted)', touchAction: 'none' }}
           {...attributes}
           {...listeners}
