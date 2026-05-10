@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { useNovel } from '@/lib/hooks/use-novels'
+import { buildBackup, downloadBackup } from '@/lib/backup'
 
 const TABS = [
   { label: 'Manuscrito', segment: 'manuscript' },
@@ -16,6 +17,15 @@ export function WorkspaceTabs() {
   const pathname = usePathname()
   const novel = useNovel(params.novelId)
 
+  async function handleExport() {
+    try {
+      const backup = await buildBackup(params.novelId)
+      downloadBackup(backup)
+    } catch {
+      alert('Error al exportar la novela. Intenta de nuevo.')
+    }
+  }
+
   return (
     <div
       className="flex items-center gap-0 px-4 border-b shrink-0"
@@ -27,6 +37,7 @@ export function WorkspaceTabs() {
       <span className="text-sm font-semibold mr-6 truncate max-w-[180px]" style={{ color: 'var(--text-primary)' }}>
         {novel?.title ?? '...'}
       </span>
+
       {TABS.map(({ label, segment }) => {
         const href = `/novel/${params.novelId}/${segment}`
         const active = pathname.startsWith(href)
@@ -44,6 +55,18 @@ export function WorkspaceTabs() {
           </Link>
         )
       })}
+
+      <div className="ml-auto">
+        <button
+          type="button"
+          onClick={handleExport}
+          title="Exportar backup de esta novela"
+          className="text-xs px-3 py-1 rounded"
+          style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}
+        >
+          ⬇ Exportar
+        </button>
+      </div>
     </div>
   )
 }
